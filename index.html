@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>出访日程及预算表 · 生成工具</title>
+    <link rel="stylesheet" href="styles.css?v=20260604">
+  </head>
+  <body>
+    <section class="brand-banner" aria-label="欧美亚航空品牌图">
+      <img src="assets/ea-aviation-bg.png" alt="欧美亚（海南）航空会务有限公司">
+    </section>
+
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">DOCX Generator</p>
+        <h1>出访日程及预算表 · 生成工具</h1>
+      </div>
+      <div class="header-actions">
+        <button class="ghost-button" type="button" id="load-demo">填入示例</button>
+        <button class="ghost-button" type="button" id="export-draft">导出草稿</button>
+        <button class="ghost-button" type="button" id="import-draft">导入草稿</button>
+        <input class="visually-hidden" id="draft-file" type="file" accept=".json,application/json">
+        <button class="ghost-button" type="button" id="restore-draft-word">从 Word 导入</button>
+        <input class="visually-hidden" id="draft-word-file" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+        <button class="ghost-button" type="button" id="save-data">保存当前填写</button>
+        <button class="ghost-button" type="button" id="load-data">加载上次填写</button>
+        <button class="danger-button" type="button" id="clear-data">清除数据</button>
+        <p class="top-status" id="top-status">准备就绪</p>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="panel">
+        <div class="section-title">
+          <h2>基础信息</h2>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            组团单位
+            <input id="org-name" type="text" value="某某单位">
+          </label>
+          <label>
+            团长姓名
+            <input id="leader-name" type="text" value="张三">
+          </label>
+          <label>
+            访问国家/地区
+            <select id="country"></select>
+          </label>
+          <label>
+            预算类型
+            <select id="budget-type">
+              <option value="出访">出访</option>
+              <option value="培训">培训</option>
+            </select>
+          </label>
+          <label>
+            审批格式
+            <select id="approval-format">
+              <option value="henan">河南审批格式</option>
+              <option value="hainan">海南审批格式</option>
+            </select>
+          </label>
+          <label>
+            出访人数
+            <input id="people-count" type="number" min="1" placeholder="例如：5">
+          </label>
+          <label>
+            汇率日期
+            <input id="rate-date" type="date">
+          </label>
+          <label>
+            落款日期
+            <input id="document-date" type="date">
+          </label>
+        </div>
+      </section>
+
+      <section class="panel rate-panel" id="rate-panel">
+        <div class="section-title">
+          <h2>汇率设置</h2>
+        </div>
+        <div class="rate-grid" id="rate-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title with-action">
+          <h2>航班信息</h2>
+          <button class="ghost-button" type="button" id="add-flight">添加航班</button>
+        </div>
+        <div class="flight-list" id="flight-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title with-action">
+          <h2>日程安排</h2>
+          <button class="ghost-button" type="button" id="add-itinerary">添加一行</button>
+        </div>
+        <div class="itinerary-list" id="itinerary-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>经费预算</h2>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            公务舱机票说明
+            <input id="business-flight-label" type="text" placeholder="例如：国际大段公务舱+内陆段经济舱">
+          </label>
+          <label>
+            公务舱机票 / 人民币每人
+            <input id="business-flight" type="number" min="0">
+          </label>
+          <label>
+            经济舱机票 / 人民币每人
+            <input id="economy-flight" type="number" min="0">
+          </label>
+          <label>
+            公务舱人数
+            <input id="business-count" type="number" min="0">
+          </label>
+          <label>
+            经济舱人数
+            <input id="economy-count" type="number" min="0">
+          </label>
+          <label>
+            住宿费小计
+            <input id="hotel-amount" type="number" min="0" readonly>
+          </label>
+          <label>
+            伙食费小计
+            <input id="meal-amount" type="number" min="0" readonly>
+          </label>
+          <label>
+            公杂费小计
+            <input id="misc-amount" type="number" min="0" readonly>
+          </label>
+          <label>
+            其他费用 / 人民币每人
+            <input id="other-cny" type="number" min="0" readonly>
+          </label>
+        </div>
+
+        <div class="section-title with-action sub-section-title">
+          <h3>各城市标准</h3>
+          <button class="ghost-button" type="button" id="add-city">添加城市</button>
+        </div>
+        <div class="city-list" id="city-list"></div>
+
+        <div class="section-title with-action sub-section-title">
+          <h3>其他费用明细</h3>
+          <button class="ghost-button" type="button" id="add-other-expense">添加费用</button>
+        </div>
+        <div class="other-expense-list" id="other-expense-list"></div>
+      </section>
+
+      <section class="actions">
+        <button class="primary-button" type="button" id="generate-docx">生成 Word</button>
+        <p id="status">💾 数据存储：保存当前填写、加载上次填写、清除数据。生成的 Word 会直接下载到浏览器下载目录。</p>
+      </section>
+    </main>
+
+    <script src="standards.js?v=20260604"></script>
+    <script src="script.js?v=20260604-budget-fix"></script>
+  </body>
+</html>
